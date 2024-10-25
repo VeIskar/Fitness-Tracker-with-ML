@@ -60,3 +60,53 @@ def read_data_from_files(files):
     del gyr_df["elapsed (s)"]
 
     return acc_df, gyr_df
+
+
+acc_df, gyr_df = read_data_from_files(files)
+
+
+#merging/concatanation of datasets
+
+merged_data = pd.concat([acc_df.iloc[:, :3], gyr_df], axis=1) #we choose only first 3 columns from accelerometer
+
+merged_data.dropna()
+
+
+#renaming column names
+merged_data.columns = [
+    "acc_x",
+    "acc_y",
+    "acc_z",
+    "gyr_x",
+    "gyr_y",
+    "gyr_z",
+    "label",
+    "category",
+    "participant",
+    "set",
+]
+
+
+#data resampling 
+sampling = {
+    "acc_x":"mean",
+    "acc_y":"mean",
+    "acc_z":"mean",
+    "gyr_x":"mean",
+    "gyr_y":"mean",
+    "gyr_z":"mean",
+    "label":"last_val",
+    "category":"last_val",
+    "participant":"last_val",
+    "set":"last_val",
+}
+
+
+merged_data[:1000].resample(rule="200ms").apply(sampling)
+
+
+days_data = [i for j, i in merged_data.groupby(pd.Grouper(freq= "D"))]
+
+
+#resampled data
+data_res = pd.concat([df.resample(rule="200ms").apply(sampling).dropna() for df in days_data])
