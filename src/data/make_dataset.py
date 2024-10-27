@@ -80,9 +80,9 @@ merged_data.columns = [
     "gyr_x",
     "gyr_y",
     "gyr_z",
+    "participant",
     "label",
     "category",
-    "participant",
     "set",
 ]
 
@@ -95,14 +95,11 @@ sampling = {
     "gyr_x":"mean",
     "gyr_y":"mean",
     "gyr_z":"mean",
+    "participant":"last_val",
     "label":"last_val",
     "category":"last_val",
-    "participant":"last_val",
     "set":"last_val",
 }
-
-
-merged_data[:1000].resample(rule="200ms").apply(sampling)
 
 
 days_data = [i for j, i in merged_data.groupby(pd.Grouper(freq= "D"))]
@@ -110,3 +107,8 @@ days_data = [i for j, i in merged_data.groupby(pd.Grouper(freq= "D"))]
 
 #resampled data
 data_res = pd.concat([df.resample(rule="200ms").apply(sampling).dropna() for df in days_data])
+data_res["set"] = data_res["set"].astype("int")
+
+
+#exporting dataset
+data_res.to_pickle("../../interim/01_data_processed.pkl")
