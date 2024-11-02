@@ -23,3 +23,30 @@ for lab in df["label"].unique():
     plt.legend()
     plt.show()
 
+
+
+#changing plot settings
+plt.style.use('seaborn-darkgrid')
+
+mpl.rcParams['lines.linewidth'] = 2
+mpl.rcParams['figure.dpi'] = 100
+
+
+#comparing heavy and medium sets
+category_df = df.query("label == 'squat'").query("participant == 'A'").reset_index()
+fig, ax = plt.subplots()
+category_df.groupby(["category"])["acc_y"].plot()   #plot with differences between medium and heavy
+ax.set_ylabel("acc_y")
+ax.set_xlabel("samples")
+plt.legend()
+
+
+#participants comparison
+participants_df = category_df = df.query("label == 'bench'").sort_values("participant").reset_index()
+
+
+fig, ax = plt.subplots()
+participants_df.groupby(["category"])["acc_y"].plot()
+ax.set_ylabel("acc_y")
+ax.set_xlabel("samples")
+plt.legend()
