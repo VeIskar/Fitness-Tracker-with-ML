@@ -134,3 +134,33 @@ combined_plot_df[["gyr_x", "gyr_y", "gyr_z"]].plot(ax=ax[1])
 ax[0].legend(loc="upper center", bbox_to_anchor=(0.5, 1.15), ncol =3, fancybox=True, shadow=True)
 ax[1].legend(loc="upper center", bbox_to_anchor=(0.5, 1.15), ncol =3, fancybox=True, shadow=True)
 ax[1].set_xlabel("samples")
+
+
+#exporting figures of all combinations of both sensors
+
+labels = df["label"].unique()
+participants = df["participant"].unique()
+
+for lbl in labels:
+    for prt in participants:
+        combined_plot_df = (
+            df.query(f"label == '{label}'")
+            .query(f"label == '{participant}'")
+            .reset_index()
+
+        )
+
+        if len(combined_plot_df)>0:
+            fig, ax = plt.subplots(nrows=2, sharex=True, figsize=(20, 10))
+            combined_plot_df[["gyr_x", "gyr_y", "gyr_z"]].plot(ax=ax[0])
+            combined_plot_df[["gyr_x", "gyr_y", "gyr_z"]].plot(ax=ax[1])
+
+
+            ax[0].legend(loc="upper center", bbox_to_anchor=(0.5, 1.15), ncol =3, fancybox=True, shadow=True)
+            ax[1].legend(loc="upper center", bbox_to_anchor=(0.5, 1.15), ncol =3, fancybox=True, shadow=True)
+            ax[1].set_xlabel("samples")
+
+
+            #exporting
+            plt.savefig(f"../../reports/figures/{label.title()}_({participant}).png")
+            plt.show()
