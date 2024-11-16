@@ -5,11 +5,11 @@ from glob import glob
 files = glob("../../data/raw/MetaMotion/*.csv")
 
 #size
-len(files)
+print(f"Number of files: {len(files)}")
 
 
 #reading all files
-data_path = "../../data/raw/MetaMotion/"
+data_path = ("../../data/raw/MetaMotion/")
 
 def read_data_from_files(files):
     acc_df = pd.DataFrame() #Accelerometer
@@ -23,7 +23,7 @@ def read_data_from_files(files):
         #extracting features from filename
         participant = f.split("-")[0].replace(data_path, "")
         label = f.split("-")[1]
-        category = f.split("-")[2].rstrip("123").rstrip("_MetaWear2019")
+        category = f.split("-")[2].rstrip("123").rstrip("_MetaWear_2019")
 
         df = pd.read_csv(f)
 
@@ -44,8 +44,6 @@ def read_data_from_files(files):
         
 
     #datetime data
-
-    pd.to_datetime(df["epoch (ms)"], unit="ms")
 
     acc_df.index = pd.to_datetime(acc_df["epoch (ms)"], unit="ms")
     gyr_df.index = pd.to_datetime(gyr_df["epoch (ms)"], unit="ms")
@@ -95,10 +93,10 @@ sampling = {
     "gyr_x":"mean",
     "gyr_y":"mean",
     "gyr_z":"mean",
-    "participant":"last_val",
-    "label":"last_val",
-    "category":"last_val",
-    "set":"last_val",
+    "participant":"last",
+    "label":"last",
+    "category":"last",
+    "set":"last",
 }
 
 
@@ -111,4 +109,4 @@ data_res["set"] = data_res["set"].astype("int")
 
 
 #exporting dataset
-data_res.to_pickle("../../interim/01_data_processed.pkl")
+#data_res.to_pickle("../../data/interim/01_data_processed.pkl")
