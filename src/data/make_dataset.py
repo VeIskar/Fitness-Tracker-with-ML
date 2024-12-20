@@ -109,4 +109,4 @@ data_res["set"] = data_res["set"].astype("int")
 
 
 #exporting dataset
-#data_res.to_pickle("../../data/interim/01_data_processed.pkl")
+data_res.to_pickle("../../data/interim/01_data_processed.pkl")
