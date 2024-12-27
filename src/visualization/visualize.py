@@ -179,7 +179,7 @@ for lbl in labels:
             ax[1].legend(loc="upper center", bbox_to_anchor=(0.5, 1.15), ncol=3, fancybox=True, shadow=True)
             
             #save the plot
-            plt.savefig(f"../reports/figures/{lbl.title()}_({prt}).png")
+            plt.savefig(f"../../reports/figures/{lbl.title()}_({prt}).png")
             #plt.show() show all the plots
 
 

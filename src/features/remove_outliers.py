@@ -252,3 +252,39 @@ dataset,outliers, X_scores = mark_outliers_lof(df, outlier_cols)
 for col in outlier_cols:
     plot_binary_outliers(dataset=dataset, col=col, outlier_col="outlier_lof",reset_index=True)
 
+
+#additonal testing of methods
+
+#single gyroscope column test: 
+col = "gyr_z"
+dataset = mark_outliers_chauvenet(df, col=col)
+dataset[dataset["gyr_z_outlier"]]
+
+dataset.loc[dataset["gyr_z_outlier"], "gyr_z"] = np.nan
+
+
+#loop for all
+outlier_removed_df = df.copy()
+
+for col in outlier_cols:
+     for label in df["label"].unique():
+          #we create a subset of original df based off the for loop label
+          dataset = dataset = mark_outliers_chauvenet(df[df["label"]==label], col)
+          
+          #replace values marked as outliers with NaN
+          dataset.loc[dataset[col + "_outlier"], col] = np.nan 
+
+          #update original dataframe column
+          outlier_removed_df.loc[(outlier_removed_df["label"]==label), col] = dataset[col]
+          #we take output subset then speciyf NaN column
+
+          removed_vals = len(dataset) - len(dataset[col].dropna())
+          print(f"removed {removed_vals} from {col} for {label}")
+          
+
+#show the replaced values marked as outlier in dataframe
+outlier_removed_df.info()
+
+
+#exporting the dataframe
+outlier_removed_df.to_pickle("../../data/interim/02_outliers_removed_chauvenets.pkl")
