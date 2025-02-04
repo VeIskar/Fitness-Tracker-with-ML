@@ -77,3 +77,29 @@ for col in predictor_cols:
     del df_lowpas[col+ "_lowpass"]
 
 
+
+#principal component analysis for PCA
+df_pca = df_lowpas.copy()
+PCA = PrincipalComponentAnalysis()
+
+pc_vals = PCA.determine_pc_explained_variance(df_pca, predictor_cols)
+
+#method for looking up optimal amount of principal components
+#elbow technique It works by testing multiple different component numbers 
+#then evaluating the variance captured by each component numbe
+
+#example how elbow works
+plt.figure(figsize=(10,10))
+plt.plot(range(1, len(predictor_cols)+1), pc_vals)
+plt.xlabel("principal component number")
+plt.ylabel('explained variance')
+plt.show()
+
+#as we increase PC number, explained variance decreases
+#then it reaches a specific point (3 in our example) in which it diminishes
+
+df_pca = PCA.apply_pca(df_pca, predictor_cols, 3) #summarizing 6 columns into 3 components
+#visualization
+subset = df_pca[df_pca["set"] == 35]
+subset[["pca_1","pca_2","pca_3"]].plot()
+
