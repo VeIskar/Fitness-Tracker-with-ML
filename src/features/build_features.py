@@ -103,3 +103,16 @@ df_pca = PCA.apply_pca(df_pca, predictor_cols, 3) #summarizing 6 columns into 3 
 subset = df_pca[df_pca["set"] == 35]
 subset[["pca_1","pca_2","pca_3"]].plot()
 
+
+#calculating sum of squares for dynamic re-orientations of accelerometer
+
+df_squared = df_pca.copy()
+acc_r = df_squared["acc_x"]**2 + df_squared["acc_y"]**2+ df_squared["acc_z"]**2
+gyr_r = df_squared["gyr_x"]**2 + df_squared["gyr_y"]**2+ df_squared["gyr_z"]**2
+ 
+df_squared["acc_r"] = np.sqrt(acc_r)
+df_squared["gyr_r"] = np.sqrt(gyr_r)
+
+subset = df_squared[df_squared["set"] == 15]
+
+subset[["acc_r", "gyr_r"]].plot(subplots = True)
