@@ -116,3 +116,21 @@ df_squared["gyr_r"] = np.sqrt(gyr_r)
 subset = df_squared[df_squared["set"] == 15]
 
 subset[["acc_r", "gyr_r"]].plot(subplots = True)
+
+
+#temporal abstraction
+
+#calculating mean (rolling average) using pandas helps smoothing out 
+#small fluctuations in datasets we loop
+
+
+df_temporal = df_squared.copy()
+NumAbs = NumericalAbstraction() #extract different statistical props for a given window size
+
+predictor_cols= predictor_cols + ["acc_r", "gyr_r"]
+win_size = int(1000/200)
+
+for col in predictor_cols:
+    df_temporal = NumAbs.abstract_numerical(df_temporal, [col], win_size, "mean")
+    df_temporal = NumAbs.abstract_numerical(df_temporal, [col], win_size, "std")
+
