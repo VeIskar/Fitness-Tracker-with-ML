@@ -134,3 +134,21 @@ for col in predictor_cols:
     df_temporal = NumAbs.abstract_numerical(df_temporal, [col], win_size, "mean")
     df_temporal = NumAbs.abstract_numerical(df_temporal, [col], win_size, "std")
 
+
+df_temp_list = []
+for i in df_temporal["set"].unique():
+    subset = df_temporal[df_temporal["set"]==i].copy()
+    for col in predictor_cols:
+        subset = NumAbs.abstract_numerical(subset, [col], win_size, "mean")
+        subset = NumAbs.abstract_numerical(subset, [col], win_size, "std")
+    df_temp_list.append(subset)
+
+df_temporal = pd.concat(df_temp_list)
+#df_temporal.info()
+
+#visualization
+subset[["acc_y", "acc_y_temp_win_size_5", "acc_y_temp_std_win_size_5"]].plot()
+subset[["gyr_y", "gyr_y_temp_win_size_5", "gyr_y_temp_std_win_size_5"]].plot()
+
+subset[["acc_x", "acc_x_temp_win_size_5", "acc_x_temp_std_win_size_5"]].plot()
+subset[["gyr_x", "gyr_x_temp_win_size_5", "gyr_x_temp_std_win_size_5"]].plot()
