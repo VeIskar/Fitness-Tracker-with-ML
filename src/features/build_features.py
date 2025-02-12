@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from DataTransformation import LowPassFilter, PrincipalComponentAnalysis
 from TemporalAbstraction import NumericalAbstraction
 from FrequencyAbstraction import FourierTransformation
-
+from sklearn.cluster import KMeans
 
 #load data
 df = pd.read_pickle("../../data/interim/02_outliers_removed_chauvenets.pkl")
@@ -180,3 +180,36 @@ for s in df_freq["set"].unique():
 df_freq = pd.concat(df_freq_list).set_index("epoch (ms)", drop=True)
 
 df_freq = df_freq.dropna()
+df_freq.iloc[::2]
+
+#clustering
+df_cluster = df_freq.copy()
+
+cluster_cols = ["acc_y"]
+k_values = range(2,10) #loop over values
+inertias = []
+
+#K-means clustering  is unsupervised machine learning algorithm to group data into clusters
+#based on similarity. It works by randomly initializing k points/centroids in data space
+#calculates the distance between each data point and centroid and assigns each point to closet centroid
+
+for k in k_values:
+    subset = df_cluster[cluster_cols] #subset for columns we want to cluster
+    kms = KMeans(k=k, n_init=20, random_state=0) #train the model
+    cluster_lbls = kms.fit_predict(subset)
+
+    #append the determined amount of k to use in visualization
+    inertias.append(kms.inertia_) #sum of squared dists of samples to closest cluster
+
+#check elbow joint in inertias
+plt.figure(figsize=(10,10))
+plt.plot(k_values, inertias)
+plt.xlabel("k")
+plt.ylabel('sum of squared distances')
+plt.show()
+
+
+kms = KMeans(n_clusters=5, n_init=20, random_state=0)
+subset = df_cluster[cluster_cols]
+df_cluster["cluster"] = kms.fit_predict(subset)
+
